@@ -14,10 +14,18 @@ jobs:
           name: Which bundler?
           command: |
             bundle -v
+      - run:
+          name: update rubygems
+          command: |
+            gem update --system
+      - run:
+          name: update bundler
+          command: | 
             bundle update --bundler
-            
+      - run:
+          name: Which bundler?
+          command: |
             bundle -v
-
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "Gemfile.lock" }}
