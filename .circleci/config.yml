@@ -11,9 +11,11 @@ jobs:
 
       # Which version of bundler?
       - run:
-          name: Which bundler?
+          name: Which bundler, gem, ruby?
           command: |
             bundle -v
+            gem -v
+            ruby -v
       - run:
           name: update rubygems
           command: |
