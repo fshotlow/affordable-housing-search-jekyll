@@ -1,26 +1,25 @@
-defaults: &defaults
-  working_directory: ~/repo
 version: 2
 jobs:
   build:
-    <<: *defaults
     docker:
-      - image: circleci/ruby:2.5
-    environment:
-      BUNDLE_PATH: ~/repo/vendor/bundle
+      - image: circleci/ruby:2.4.1-node-browsers
+    working_directory: ~/repo
     steps:
       - checkout
       - restore_cache:
           keys:
-            - rubygems-v1-{{ checksum "Gemfile.lock" }}
-            - rubygems-v1-fallback
+            - v1-dependencies-{{ checksum "Gemfile.lock" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
       - run:
-          name: Bundle Install
-          command: bundle check || sudo gem install -y bundler bundle install
+          name: install dependencies
+          command: |
+            bundle install --jobs=4 --retry=3 --path vendor/bundle
+
       - save_cache:
-          key: rubygems-v1-{{ checksum "Gemfile.lock" }}
           paths:
-            - vendor/bundle
+            - ./vendor/bundle
+          key: v1-dependencies-{{ checksum "Gemfile.lock" }}
       - run:
           name: Jekyll build
           command: bundle exec jekyll build
