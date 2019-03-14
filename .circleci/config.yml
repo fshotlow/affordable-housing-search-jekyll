@@ -12,7 +12,11 @@ jobs:
       # Which version of bundler?
       - run:
           name: Which bundler?
-          command: bundle -v
+          command: |
+            bundle -v
+            bundle update --bundler
+            
+            bundle -v
 
       - restore_cache:
           keys:
